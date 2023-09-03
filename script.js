@@ -93,8 +93,3 @@ searchButton.addEventListener("click", getCityCoordinates);
 cityInput.addEventListener("keyup", e => e.key === "Enter" && getCityCoordinates());
 
 
-
-
-
-
-// "4ad432a816fb1ab0e83d962d52909803"

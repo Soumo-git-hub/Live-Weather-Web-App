@@ -2,6 +2,8 @@
 
 This simple web application provides real-time weather information for different locations. It's built using HTML, CSS, and JavaScript and utilizes a weather API to fetch and display weather data.
 
+![lwaw](https://github.com/Soumo-git-hub/Live-Weather-Web-App/assets/132326747/66d1a22a-8816-41f1-8c26-33dc389245ce)
+
 ## Table of Contents
 
 - [Features](#Features)

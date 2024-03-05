@@ -7,9 +7,11 @@
 body {
   font-family: 'Gruppo';
   font-size: 42px;
-  background-image: url("    https://images3.alphacoders.com/109/1091500.jpg");
+  background-image: url("wb.jpg");
   background-size: cover;
-  background-position: top center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .app-wrap {
@@ -281,4 +283,3 @@ header input {
 header input:focus {
   background-color: rgba(18, 18, 18, 0.8);
 }
-

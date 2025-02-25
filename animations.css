@@ -1,0 +1,184 @@
+/* Loading Animation */
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg) }
+    100% { transform: rotate(360deg) }
+}
+
+/* Weather Animations */
+.rain {
+    position: absolute;
+    width: 2px;
+    height: 100px;
+    background: linear-gradient(transparent, #fff);
+    animation: rain-fall linear infinite;
+}
+
+@keyframes rain-fall {
+    0% { transform: translateY(-100px) }
+    100% { transform: translateY(100vh) }
+}
+
+.snow {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: snow-fall linear infinite;
+}
+
+@keyframes snow-fall {
+    0% {
+        transform: translateY(-10px) rotate(0deg);
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+/* Theme Transition */
+.theme-transition {
+    animation: theme-fade 0.5s ease;
+}
+
+@keyframes theme-fade {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Card Hover Effects */
+.metric-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Pulse Animation for Loading States */
+.pulse {
+    animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Slide Animations */
+.slide-in {
+    animation: slide-in 0.5s ease forwards;
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Fade Animations */
+.fade-in {
+    animation: fade-in 0.5s ease forwards;
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Weather Icon Animations */
+.weather-icon {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+/* Sun Animation */
+.sun {
+    width: 50px;
+    height: 50px;
+    background: #FFD700;
+    border-radius: 50%;
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    animation: sun-pulse 2s ease infinite;
+}
+
+@keyframes sun-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Cloud Animation */
+.cloud {
+    width: 60px;
+    height: 20px;
+    background: #fff;
+    border-radius: 20px;
+    position: absolute;
+    top: 40px;
+    left: 20px;
+    animation: cloud-float 3s ease infinite;
+}
+
+.cloud:before,
+.cloud:after {
+    content: '';
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+}
+
+.cloud:before {
+    width: 25px;
+    height: 25px;
+    top: -10px;
+    left: 10px;
+}
+
+.cloud:after {
+    width: 20px;
+    height: 20px;
+    top: -8px;
+    left: 35px;
+}
+
+@keyframes cloud-float {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+    100% { transform: translateX(0); }
+}
+
+/* Thunder Animation */
+.thunder {
+    position: absolute;
+    width: 30px;
+    height: 45px;
+    background: #FFD700;
+    clip-path: polygon(50% 0%, 0% 100%, 50% 65%, 100% 100%);
+    animation: thunder-flash 2s ease infinite;
+}
+
+@keyframes thunder-flash {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}

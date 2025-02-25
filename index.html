@@ -1,108 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Live Weather WebApp - Get real-time weather updates and forecasts for cities worldwide">
-  <meta name="theme-color" content="#0434f5">
-  <title>Live Weather WebApp</title>
-  <link rel="shortcut icon" href="S-Logo.jpg" type="image/jpeg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gruppo&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="animations.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-  <div class="app-wrap">
-    <header>
-      <h1>Live Weather Dashboard</h1>
-    </header>
-    
-    <div class="container">
-      <section class="weather-input">
-        <form id="search-form" aria-label="Search for a city">
-          <label for="city-input" class="visually-hidden">Enter city name</label>
-          <input 
-            type="text" 
-            id="city-input" 
-            placeholder="Enter city name e.g., Delhi, Tokyo, New York"
-            aria-label="City name"
-            required
-          >
-          <button type="submit" class="search-btn" id="search-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            Search
-          </button>
-        </form>
-        
-        <div class="separator"></div>
-        
-        <button class="location-btn" id="location-btn" aria-label="Use current location">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="location-icon" width="18" height="18" aria-hidden="true">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-          </svg>
-          Get Current Location
-        </button>
-      </section>
-      
-      <main class="weather-data">
-        <section class="current-weather" aria-live="polite">
-          <div>
-            <h2 id="city-name">City Name</h2>
-            <h6 id="temperature">--°C</h6>
-            <div class="weather-details">
-              <p>Humidity: <span id="humidity">--</span>%</p>
-              <p>Wind: <span id="wind-speed">--</span> m/s</p>
-              <p>Air Quality: <span id="air-quality">--</span></p>
+<body class="light-theme">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Weather Background Canvas -->
+    <canvas id="weatherCanvas"></canvas>
+
+    <!-- Main Container -->
+    <div class="container glass-effect">
+        <!-- Theme Toggle -->
+        <div class="theme-toggle">
+            <button id="themeToggle" class="neumorphic-btn">
+                <span class="light-icon">☀️</span>
+                <span class="dark-icon">🌙</span>
+            </button>
+        </div>
+
+        <!-- Location Section -->
+        <div class="location-section">
+            <div class="location-input glass-effect">
+                <input type="text" id="locationSearch" placeholder="Search location...">
+                <button class="neumorphic-btn" id="searchBtn">🔍</button>
+                <button class="neumorphic-btn" id="currentLocationBtn">📍</button>
             </div>
-          </div>
-          
-          <div class="icon">
-            <img id="weather-icon" src="placeholder-icon.png" alt="Weather Icon" width="120" height="120">
-            <h6 id="weather-description">Weather Description</h6>
-          </div>
-        </section>
-        
-        <section class="days-forecast">
-          <h2>5-Day Forecast</h2>
-          <ul class="weather-cards" id="forecast-list" aria-label="5-day weather forecast">
-            <!-- Forecast Cards will be injected here -->
-          </ul>
-        </section>
-        
-        <section class="additional-info">
-          <h3>Weather Insights</h3>
-          <p id="weather-insights"></p>
-          <aside class="coming-soon">
-            <h4>Coming Soon</h4>
-            <ul>
-              <li>Historical weather data</li>
-              <li>Weather alerts</li>
-              <li>Air quality details</li>
-            </ul>
-          </aside>
-        </section>
-      </main>
-    </div>
-    
-    <footer>
-      <p>&copy; <span id="current-year">2025</span> Live Weather WebApp. Weather data provided by <a href="#" target="_blank" rel="noopener">Weather API</a></p>
-    </footer>
-  </div>
+            <h2 id="locationName">Loading location...</h2>
+        </div>
 
-  <noscript>
-    <div class="error-message">
-      JavaScript is required for this application to work properly. Please enable JavaScript in your browser settings.
-    </div>
-  </noscript>
+        <!-- Current Weather -->
+        <div class="weather-main glass-effect">
+            <div class="weather-basic">
+                <div class="temperature">
+                    <h1 id="currentTemp">--°C</h1>
+                    <p id="feelsLike">Feels like: --°C</p>
+                </div>
+                <div class="weather-icon">
+                    <div id="weatherAnimation"></div>
+                    <p id="weatherDescription">--</p>
+                </div>
+            </div>
+            
+            <!-- Weather Metrics Grid -->
+            <div class="weather-metrics">
+                <div class="metric-card glass-effect">
+                    <span class="metric-icon">💨</span>
+                    <p>Wind Speed</p>
+                    <h3 id="windSpeed">-- km/h</h3>
+                </div>
+                <div class="metric-card glass-effect">
+                    <span class="metric-icon">💧</span>
+                    <p>Humidity</p>
+                    <h3 id="humidity">--%</h3>
+                </div>
+                <div class="metric-card glass-effect">
+                    <span class="metric-icon">🌡️</span>
+                    <p>AQI</p>
+                    <h3 id="aqi">--</h3>
+                </div>
+                <div class="metric-card glass-effect">
+                    <span class="metric-icon">☀️</span>
+                    <p>UV Index</p>
+                    <h3 id="uvIndex">--</h3>
+                </div>
+            </div>
+        </div>
 
-  <script src="script.js"></script>
-  <script>
-    // Set current year in footer
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-  </script>
+        <!-- Forecast Section -->
+        <div class="forecast-section glass-effect">
+            <h3>7-Day Forecast</h3>
+            <div class="forecast-graph">
+                <canvas id="forecastChart"></canvas>
+            </div>
+            <div class="hourly-forecast" id="hourlyForecast">
+                <!-- Hourly forecast items will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="recommendations glass-effect">
+            <h3>Today's Recommendations</h3>
+            <div class="recommendation-cards">
+                <div class="recommendation-card glass-effect">
+                    <h4>Clothing 👕</h4>
+                    <p id="clothingRecommendation">Loading...</p>
+                </div>
+                <div class="recommendation-card glass-effect">
+                    <h4>Activities 🎯</h4>
+                    <p id="activityRecommendation">Loading...</p>
+                </div>
+                <div class="recommendation-card glass-effect">
+                    <h4>UV Protection ⚠️</h4>
+                    <p id="uvRecommendation">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historical Data Section -->
+        <div class="historical-data glass-effect">
+            <h3>Historical Comparison</h3>
+            <canvas id="historicalChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="weather.js"></script>
+    <script src="animations.js"></script>
+    <script src="charts.js"></script>
 </body>
 </html>

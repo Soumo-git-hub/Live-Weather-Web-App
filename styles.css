@@ -1,0 +1,275 @@
+:root {
+  /* Color Scheme */
+  --bg-light: #f0f4ff;
+  --text-light: #2c3e50;
+  --glass-bg-light: rgba(255, 255, 255, 0.85);
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  
+  --bg-dark: #1a1a2e;
+  --text-dark: #ffffff;
+  --glass-bg-dark: rgba(16, 18, 27, 0.85);
+  --shadow-dark: rgba(0, 0, 0, 0.4);
+  
+  --primary-accent: #4361ee;
+  --secondary-accent: #4cc9f0;
+
+  /* Spacing */
+  --base-spacing: 1rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+/* Reset and Base Styles */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  transition: background-color var(--transition-normal);
+}
+
+/* Theme Management */
+body.light-theme {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+body.dark-theme {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* Glass Morphism Effect */
+.glass-effect {
+  background: linear-gradient(
+    135deg,
+    var(--glass-bg-light) 0%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  backdrop-filter: blur(12px) saturate(180%);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px var(--shadow-light);
+  transition: var(--transition-normal);
+}
+
+.dark-theme .glass-effect {
+  background: linear-gradient(
+    135deg,
+    var(--glass-bg-dark) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  box-shadow: 0 8px 32px var(--shadow-dark);
+}
+
+/* Neumorphic Button System */
+.neumorphic-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: inherit;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.light-theme .neumorphic-btn {
+  box-shadow: 
+    3px 3px 6px var(--shadow-light),
+    -3px -3px 6px rgba(255, 255, 255, 0.8);
+}
+
+.dark-theme .neumorphic-btn {
+  box-shadow: 
+    3px 3px 6px var(--shadow-dark),
+    -3px -3px 6px rgba(255, 255, 255, 0.05);
+}
+
+/* Layout System */
+.container {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: clamp(1rem, 5vw, 2rem);
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2rem);
+  position: relative;
+  z-index: 1;
+}
+
+/* Weather Canvas */
+#weatherCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Weather Metrics Grid */
+.weather-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: var(--base-spacing);
+  margin-top: 2rem;
+}
+
+.metric-card {
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform var(--transition-fast);
+  
+  &:hover {
+    transform: translateY(-5px);
+  }
+  
+  .metric-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+  }
+}
+
+/* Forecast Section */
+.forecast-section {
+  padding: 1.5rem;
+  
+  .forecast-graph {
+    height: 300px;
+    margin-block: 1rem;
+  }
+}
+
+.hourly-forecast {
+  display: flex;
+  gap: 1rem;
+  padding-block: 1rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-accent) transparent;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary-accent);
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* Recommendations Grid */
+.recommendation-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: var(--base-spacing);
+  margin-top: 1.5rem;
+}
+
+.recommendation-card {
+  padding: 1.5rem;
+  
+  h4 {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+  
+  &.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .weather-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .recommendation-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .location-input {
+    flex-direction: column;
+    
+    input {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .weather-metrics {
+    grid-template-columns: 1fr;
+  }
+  
+  .neumorphic-btn {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+[aria-hidden="true"] {
+  pointer-events: none;
+}

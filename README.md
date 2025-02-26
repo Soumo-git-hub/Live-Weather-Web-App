@@ -48,4 +48,4 @@ Create a pull request to the main repository.
 
 ## More Features Adding Soon 
 
-*Thank You :)*
+**Working On New Features :)**

@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Dashboard</title>
+    <title>WeatherSense - Smart Weather Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="animations.css">
+    <!-- Font Awesome for better icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -13,6 +15,7 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay">
         <div class="loader"></div>
+        <p class="loading-text">Fetching weather data...</p>
     </div>
 
     <!-- Weather Background Canvas -->
@@ -20,22 +23,44 @@
 
     <!-- Main Container -->
     <div class="container glass-effect">
-        <!-- Theme Toggle -->
-        <div class="theme-toggle">
-            <button id="themeToggle" class="neumorphic-btn">
-                <span class="light-icon">☀️</span>
-                <span class="dark-icon">🌙</span>
-            </button>
-        </div>
+        <!-- App Header with Controls -->
+        <header class="app-header">
+            <div class="app-branding">
+                <h1 class="app-title"><i class="fas fa-cloud-sun"></i> WeatherSense</h1>
+            </div>
+            
+            <!-- Controls Container -->
+            <div class="app-controls">
+                <!-- Theme Toggle -->
+                <div class="theme-toggle">
+                    <button id="themeToggle" class="neumorphic-btn" aria-label="Toggle theme">
+                        <span class="light-icon"><i class="fas fa-sun"></i></span>
+                        <span class="dark-icon"><i class="fas fa-moon"></i></span>
+                    </button>
+                </div>
+                
+                <!-- Units Toggle -->
+                <div class="unit-toggle">
+                    <button id="unitToggle" class="neumorphic-btn">
+                        <span class="unit-c">°C</span>
+                        <span class="unit-f">°F</span>
+                    </button>
+                </div>
+            </div>
+        </header>
 
         <!-- Location Section -->
         <div class="location-section">
             <div class="location-input glass-effect">
+                <i class="fas fa-search search-icon"></i>
                 <input type="text" id="locationSearch" placeholder="Search location...">
-                <button class="neumorphic-btn" id="searchBtn">🔍</button>
-                <button class="neumorphic-btn" id="currentLocationBtn">📍</button>
+                <button class="neumorphic-btn" id="searchBtn" aria-label="Search"><i class="fas fa-search"></i></button>
+                <button class="neumorphic-btn" id="currentLocationBtn" aria-label="Current location"><i class="fas fa-map-marker-alt"></i></button>
             </div>
-            <h2 id="locationName">Loading location...</h2>
+            <div class="location-info">
+                <h2 id="locationName">Loading location...</h2>
+                <p id="locationTime">Local time: --:--</p>
+            </div>
         </div>
 
         <!-- Current Weather -->
@@ -44,6 +69,7 @@
                 <div class="temperature">
                     <h1 id="currentTemp">--°C</h1>
                     <p id="feelsLike">Feels like: --°C</p>
+                    <p id="highLow">H: --° L: --°</p> <!-- Ensure this ID matches the JavaScript -->
                 </div>
                 <div class="weather-icon">
                     <div id="weatherAnimation"></div>
@@ -54,68 +80,195 @@
             <!-- Weather Metrics Grid -->
             <div class="weather-metrics">
                 <div class="metric-card glass-effect">
-                    <span class="metric-icon">💨</span>
+                    <i class="fas fa-wind metric-icon"></i>
                     <p>Wind Speed</p>
                     <h3 id="windSpeed">-- km/h</h3>
+                    <p id="windDirection" class="metric-detail">-- direction</p>
                 </div>
                 <div class="metric-card glass-effect">
-                    <span class="metric-icon">💧</span>
+                    <i class="fas fa-tint metric-icon"></i>
                     <p>Humidity</p>
                     <h3 id="humidity">--%</h3>
+                    <p id="dewPoint" class="metric-detail">Dew point: --°</p>
                 </div>
                 <div class="metric-card glass-effect">
-                    <span class="metric-icon">🌡️</span>
-                    <p>AQI</p>
+                    <i class="fas fa-lungs metric-icon"></i>
+                    <p>Air Quality</p>
                     <h3 id="aqi">--</h3>
+                    <div id="aqiIndicator" class="quality-indicator"></div>
                 </div>
                 <div class="metric-card glass-effect">
-                    <span class="metric-icon">☀️</span>
+                    <i class="fas fa-sun metric-icon"></i>
                     <p>UV Index</p>
                     <h3 id="uvIndex">--</h3>
+                    <div id="uvIndicator" class="quality-indicator"></div>
+                </div>
+            </div>
+            
+            <!-- Sunrise/Sunset Card -->
+            <div class="sun-times glass-effect">
+                <div class="sunrise">
+                    <i class="fas fa-sunrise"></i>
+                    <p>Sunrise</p>
+                    <h4 id="sunriseTime">--:--</h4>
+                </div>
+                <div class="sun-progress">
+                    <div class="progress-track">
+                        <div id="sunPosition" class="sun-indicator">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="sunset">
+                    <i class="fas fa-sunset"></i>
+                    <p>Sunset</p>
+                    <h4 id="sunsetTime">--:--</h4>
                 </div>
             </div>
         </div>
 
-        <!-- Forecast Section -->
-        <div class="forecast-section glass-effect">
-            <h3>7-Day Forecast</h3>
-            <div class="forecast-graph">
-                <canvas id="forecastChart"></canvas>
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="forecast">Forecast</button>
+                <button class="tab-btn" data-tab="recommendations">Recommendations</button>
+                <button class="tab-btn" data-tab="historical">Historical</button>
+                <button class="tab-btn" data-tab="map">Weather Map</button>
             </div>
-            <div class="hourly-forecast" id="hourlyForecast">
-                <!-- Hourly forecast items will be inserted here -->
+            
+            <div class="tab-content">
+                <!-- Forecast Tab -->
+                <div id="forecast" class="tab-pane active">
+                    <!-- Forecast Toggle -->
+                    <div class="forecast-toggle">
+                        <button class="forecast-btn active" data-forecast="hourly">Hourly</button>
+                        <button class="forecast-btn" data-forecast="daily">7-Day</button>
+                    </div>
+                    
+                    <!-- Forecast Graph -->
+                    <div class="forecast-graph glass-effect">
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                    
+                    <!-- Hourly Forecast Slider -->
+                    <div class="hourly-forecast" id="hourlyForecast">
+                        <!-- Hourly items will be added dynamically -->
+                    </div>
+                    
+                    <!-- Daily Forecast Cards -->
+                    <div class="daily-forecast" id="dailyForecast">
+                        <!-- Daily items will be added dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Recommendations Tab -->
+                <div id="recommendations" class="tab-pane">
+                    <div class="recommendations glass-effect">
+                        <h3>Today's Recommendations</h3>
+                        <div class="recommendation-cards">
+                            <div class="recommendation-card glass-effect">
+                                <h4><i class="fas fa-tshirt"></i> Clothing</h4>
+                                <p id="clothingRecommendation">Loading...</p>
+                            </div>
+                            <div class="recommendation-card glass-effect">
+                                <h4><i class="fas fa-running"></i> Activities</h4>
+                                <p id="activityRecommendation">Loading...</p>
+                            </div>
+                            <div class="recommendation-card glass-effect">
+                                <h4><i class="fas fa-umbrella-beach"></i> UV Protection</h4>
+                                <p id="uvRecommendation">Loading...</p>
+                                <div id="uvTimer" class="uv-timer">
+                                    <p>Safe exposure time: <span id="uvSafeTime">--</span></p>
+                                    <select id="skinType" class="skin-type-select">
+                                        <option value="1">Type I - Very fair</option>
+                                        <option value="2">Type II - Fair</option>
+                                        <option value="3" selected>Type III - Medium</option>
+                                        <option value="4">Type IV - Olive</option>
+                                        <option value="5">Type V - Brown</option>
+                                        <option value="6">Type VI - Dark brown/Black</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Historical Tab -->
+                <div id="historical" class="tab-pane">
+                    <div class="historical-data glass-effect">
+                        <h3>Historical Comparison</h3>
+                        
+                        <div class="historical-controls">
+                            <select id="historicalMetric" class="historical-select">
+                                <option value="temperature">Temperature</option>
+                                <option value="precipitation">Precipitation</option>
+                                <option value="humidity">Humidity</option>
+                            </select>
+                            <select id="historicalPeriod" class="historical-select">
+                                <option value="week">Past Week</option>
+                                <option value="month" selected>Past Month</option>
+                                <option value="year">Past Year</option>
+                            </select>
+                        </div>
+                        
+                        <canvas id="historicalChart"></canvas>
+                        
+                        <div class="historical-highlights">
+                            <div class="highlight-card">
+                                <h4>VS Last Year</h4>
+                                <p id="yearComparison">--</p>
+                            </div>
+                            <div class="highlight-card">
+                                <h4>VS Average</h4>
+                                <p id="avgComparison">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Map Tab -->
+                <div id="map" class="tab-pane">
+                    <div class="weather-map glass-effect">
+                        <h3>Interactive Weather Map</h3>
+                        
+                        <div class="map-controls">
+                            <select id="mapLayer" class="map-select">
+                                <option value="temperature">Temperature</option>
+                                <option value="precipitation">Precipitation</option>
+                                <option value="clouds">Cloud Cover</option>
+                                <option value="wind">Wind Speed</option>
+                            </select>
+                        </div>
+                        
+                        <div id="weatherMap" class="map-container">
+                            <!-- Map will be loaded here -->
+                        </div>
+                        
+                        <div class="map-legend">
+                            <!-- Dynamic legend will be added here -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Recommendations Section -->
-        <div class="recommendations glass-effect">
-            <h3>Today's Recommendations</h3>
-            <div class="recommendation-cards">
-                <div class="recommendation-card glass-effect">
-                    <h4>Clothing 👕</h4>
-                    <p id="clothingRecommendation">Loading...</p>
-                </div>
-                <div class="recommendation-card glass-effect">
-                    <h4>Activities 🎯</h4>
-                    <p id="activityRecommendation">Loading...</p>
-                </div>
-                <div class="recommendation-card glass-effect">
-                    <h4>UV Protection ⚠️</h4>
-                    <p id="uvRecommendation">Loading...</p>
-                </div>
-            </div>
+        
+        <!-- Alerts Section -->
+        <div id="weatherAlerts" class="weather-alerts">
+            <!-- Dynamic alerts will be added here -->
         </div>
-
-        <!-- Historical Data Section -->
-        <div class="historical-data glass-effect">
-            <h3>Historical Comparison</h3>
-            <canvas id="historicalChart"></canvas>
-        </div>
+        
+        <!-- App Footer -->
+        <footer class="app-footer">
+            <p>Weather data provided by <span id="dataProvider">OpenWeather</span></p>
+            <p>Last updated: <span id="lastUpdated">--:--</span></p>
+            <button id="refreshBtn" class="refresh-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </footer>
     </div>
 
     <!-- Scripts -->
     <script src="weather.js"></script>
     <script src="animations.js"></script>
     <script src="charts.js"></script>
+    <script src="recommendations.js"></script>
 </body>
 </html>

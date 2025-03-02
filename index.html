@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeatherSense - Smart Weather Dashboard</title>
+    <!-- Add favicon -->
+    <link rel="icon" href="S-Logo.jpg" type="image/jpeg">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="animations.css">
-    <!-- Font Awesome for better icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Other head elements -->
 </head>
 <body class="light-theme">
     <!-- Loading Overlay -->
@@ -18,39 +17,39 @@
         <p class="loading-text">Fetching weather data...</p>
     </div>
 
-    <!-- Weather Background Canvas -->
-    <canvas id="weatherCanvas"></canvas>
+    <!-- Error Notification -->
+    <div id="errorNotification" class="error-notification">
+        <div class="error-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <p id="errorMessage">Error message goes here</p>
+            <button id="closeError" class="close-btn">&times;</button>
+        </div>
+    </div>
 
     <!-- Main Container -->
-    <div class="container glass-effect">
+    <main class="container glass-effect">
         <!-- App Header with Controls -->
         <header class="app-header">
             <div class="app-branding">
-                <h1 class="app-title"><i class="fas fa-cloud-sun"></i> WeatherSense</h1>
+                <h1 class="app-title" id="refreshWeather"><i class="fas fa-cloud-sun"></i> WeatherSense</h1>
             </div>
             
             <!-- Controls Container -->
-            <div class="app-controls">
+            <nav class="app-controls">
                 <!-- Theme Toggle -->
                 <div class="theme-toggle">
-                    <button id="themeToggle" class="neumorphic-btn" aria-label="Toggle theme">
-                        <span class="light-icon"><i class="fas fa-sun"></i></span>
-                        <span class="dark-icon"><i class="fas fa-moon"></i></span>
-                    </button>
+                    <button id="themeToggle" class="neumorphic-btn" aria-label="Toggle theme">🌙</button>
                 </div>
                 
                 <!-- Units Toggle -->
                 <div class="unit-toggle">
-                    <button id="unitToggle" class="neumorphic-btn">
-                        <span class="unit-c">°C</span>
-                        <span class="unit-f">°F</span>
-                    </button>
+                    <button id="unitsToggle" class="neumorphic-btn">°C</button>
                 </div>
-            </div>
+            </nav>
         </header>
 
         <!-- Location Section -->
-        <div class="location-section">
+        <section class="location-section">
             <div class="location-input glass-effect">
                 <i class="fas fa-search search-icon"></i>
                 <input type="text" id="locationSearch" placeholder="Search location...">
@@ -61,17 +60,21 @@
                 <h2 id="locationName">Loading location...</h2>
                 <p id="locationTime">Local time: --:--</p>
             </div>
-        </div>
+        </section>
 
         <!-- Current Weather -->
-        <div class="weather-main glass-effect">
+        <section class="weather-main glass-effect">
             <div class="weather-basic">
                 <div class="temperature">
                     <h1 id="currentTemp">--°C</h1>
                     <p id="feelsLike">Feels like: --°C</p>
-                    <p id="highLow">H: --° L: --°</p> <!-- Ensure this ID matches the JavaScript -->
+                    <div id="highLow">
+                        <span id="highTemp">H: --°</span>
+                        <span id="lowTemp">L: --°</span>
+                    </div>
                 </div>
                 <div class="weather-icon">
+                    <img id="weatherIcon" src="https://openweathermap.org/img/wn/01d@2x.png" alt="Weather icon">
                     <div id="weatherAnimation"></div>
                     <p id="weatherDescription">--</p>
                 </div>
@@ -125,29 +128,36 @@
                     <h4 id="sunsetTime">--:--</h4>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Tabs Navigation -->
-        <div class="tabs-container">
-            <div class="tabs-nav">
-                <button class="tab-btn active" data-tab="forecast">Forecast</button>
-                <button class="tab-btn" data-tab="recommendations">Recommendations</button>
+        <section class="tabs-container">
+            <nav class="tabs-nav">
+                <button class="tab-btn active" data-tab="recommendations">Recommendations</button>
+                <button class="tab-btn" data-tab="forecast">Forecast</button>
                 <button class="tab-btn" data-tab="historical">Historical</button>
                 <button class="tab-btn" data-tab="map">Weather Map</button>
-            </div>
+            </nav>
             
             <div class="tab-content">
                 <!-- Forecast Tab -->
-                <div id="forecast" class="tab-pane active">
+                <div id="forecast" class="tab-pane coming-soon-tab">
+                    <div class="coming-soon-message glass-effect">
+                        <h3>Coming Soon</h3>
+                        <p>This feature is currently under development and will be available in a future update.</p>
+                        <div class="coming-soon-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                    </div>
+                    
                     <!-- Forecast Toggle -->
                     <div class="forecast-toggle">
                         <button class="forecast-btn active" data-forecast="hourly">Hourly</button>
                         <button class="forecast-btn" data-forecast="daily">7-Day</button>
                     </div>
-                    
-                    <!-- Forecast Graph -->
+                    <!-- Forecast Chart -->
                     <div class="forecast-graph glass-effect">
-                        <canvas id="forecastChart"></canvas>
+                      <canvas id="forecastChart"></canvas>
                     </div>
                     
                     <!-- Hourly Forecast Slider -->
@@ -162,9 +172,10 @@
                 </div>
                 
                 <!-- Recommendations Tab -->
-                <div id="recommendations" class="tab-pane">
+                <div id="recommendations" class="tab-pane active">
                     <div class="recommendations glass-effect">
                         <h3>Today's Recommendations</h3>
+                        <!-- Rest of recommendations content -->
                         <div class="recommendation-cards">
                             <div class="recommendation-card glass-effect">
                                 <h4><i class="fas fa-tshirt"></i> Clothing</h4>
@@ -189,15 +200,25 @@
                                     </select>
                                 </div>
                             </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Historical Tab -->
-                <div id="historical" class="tab-pane">
+                <div id="historical" class="tab-pane coming-soon-tab">
+                    <div class="coming-soon-message glass-effect">
+                        <h3>Coming Soon</h3>
+                        <p>This feature is currently under development and will be available in a future update.</p>
+                        <div class="coming-soon-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                    </div>
+                    
                     <div class="historical-data glass-effect">
                         <h3>Historical Comparison</h3>
                         
+                        <!-- Rest of historical content -->
                         <div class="historical-controls">
                             <select id="historicalMetric" class="historical-select">
                                 <option value="temperature">Temperature</option>
@@ -211,7 +232,9 @@
                             </select>
                         </div>
                         
-                        <canvas id="historicalChart"></canvas>
+                        <div class="chart-container">
+                            <canvas id="historicalChart"></canvas>
+                        </div>
                         
                         <div class="historical-highlights">
                             <div class="highlight-card">
@@ -227,10 +250,19 @@
                 </div>
                 
                 <!-- Map Tab -->
-                <div id="map" class="tab-pane">
+                <div id="map" class="tab-pane coming-soon-tab">
+                    <div class="coming-soon-message glass-effect">
+                        <h3>Coming Soon</h3>
+                        <p>This feature is currently under development and will be available in a future update.</p>
+                        <div class="coming-soon-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                    </div>
+                    
                     <div class="weather-map glass-effect">
                         <h3>Interactive Weather Map</h3>
                         
+                        <!-- Rest of map content -->
                         <div class="map-controls">
                             <select id="mapLayer" class="map-select">
                                 <option value="temperature">Temperature</option>
@@ -250,25 +282,77 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
         
         <!-- Alerts Section -->
-        <div id="weatherAlerts" class="weather-alerts">
+        <section id="weatherAlerts" class="weather-alerts">
             <!-- Dynamic alerts will be added here -->
-        </div>
+        </section>
         
-        <!-- App Footer -->
+        <!-- App Footer - Remove refresh button -->
         <footer class="app-footer">
-            <p>Weather data provided by <span id="dataProvider">OpenWeather</span></p>
-            <p>Last updated: <span id="lastUpdated">--:--</span></p>
-            <button id="refreshBtn" class="refresh-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <!-- Empty footer -->
         </footer>
-    </div>
+    </main>
+
+    <!-- Canvas for weather animations -->
+    <canvas id="weatherCanvas" class="weather-canvas"></canvas>
 
     <!-- Scripts -->
     <script src="weather.js"></script>
     <script src="animations.js"></script>
     <script src="charts.js"></script>
-    <script src="recommendations.js"></script>
+    <script src="recommendations.js" type="module"></script>
+    <script>
+        // Tab navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons and panes
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabPanes.forEach(pane => pane.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Show corresponding tab pane
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Trigger resize event to ensure charts render correctly
+                    window.dispatchEvent(new Event('resize'));
+                });
+            });
+            
+            // Forecast toggle functionality
+            const forecastButtons = document.querySelectorAll('.forecast-btn');
+            const hourlyForecast = document.getElementById('hourlyForecast');
+            const dailyForecast = document.getElementById('dailyForecast');
+            
+            forecastButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    forecastButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const forecastType = this.getAttribute('data-forecast');
+                    if (forecastType === 'hourly') {
+                        hourlyForecast.style.display = 'flex';
+                        dailyForecast.style.display = 'none';
+                    } else {
+                        hourlyForecast.style.display = 'none';
+                        dailyForecast.style.display = 'flex';
+                    }
+                    
+                    // Trigger resize event to ensure charts render correctly
+                    window.dispatchEvent(new Event('resize'));
+                });
+            });
+        });
+    </script>
+    <script src="app.js"></script>
 </body>
 </html>
+

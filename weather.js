@@ -1,5 +1,5 @@
 // Constants
-const API_KEY = "4ad432a816fb1ab0e83d962d52909803"
+const API_KEY = "YOUR_API_KEY_HERE"
 const BASE_URL = "https://api.openweathermap.org/data/2.5"
 
 // DOM Elements - with null checking

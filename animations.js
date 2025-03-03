@@ -708,4 +708,3 @@ function mapWeatherToAnimation(weatherType) {
 
 // Export functions
 window.startWeatherAnimation = startWeatherAnimation;
-
